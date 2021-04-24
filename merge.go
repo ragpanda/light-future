@@ -3,7 +3,7 @@ package light_future
 import "context"
 
 func Merge(ctx context.Context, fList ...*Future) *Future {
-	return NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (result interface{}, err error) {
+	return NewFuture(ctx, func(ctx context.Context) (result interface{}, err error) {
 		r := make([]interface{}, 0, len(fList))
 		for _, f := range fList {
 			f.Send()
@@ -27,6 +27,6 @@ func Merge(ctx context.Context, fList ...*Future) *Future {
 		result = r
 		return
 
-	}))
+	})
 
 }

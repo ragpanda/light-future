@@ -15,7 +15,7 @@ type Future struct {
 	ctx context.Context
 
 	pool     Pool
-	runnable Runnable
+	runnable FutureFunc
 	execOnce sync.Once
 	timeout  *time.Duration
 	cancel   func()
@@ -38,7 +38,9 @@ type syncResult struct {
 	err    error
 }
 
-func NewFuture(ctx context.Context, runnable Runnable) *Future {
+type FutureFunc func(context.Context) (interface{}, error)
+
+func NewFuture(ctx context.Context, runnable FutureFunc) *Future {
 
 	f := &Future{
 		ctx:      ctx,
@@ -85,7 +87,7 @@ func (self *Future) Send() *Future {
 				close(self.done)
 			}()
 
-			result, err := self.runnable.Run(ctx)
+			result, err := self.runnable(ctx)
 			atomic.StorePointer(&self.result, unsafe.Pointer(&syncResult{
 				status: statusSuccess,
 				result: result,

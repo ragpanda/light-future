@@ -11,13 +11,13 @@ Using Future tends to be more readable, asynchronous behavior is abstracted unde
 Example
 ```golang
 
-    result, err := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
-        b := a
-        return b, nil
-    })).
-    Send().
-    Await().
-    Result()
+result, err := NewFuture(ctx, func(ctx context.Context) (interface{}, error) {
+    b := a
+    return b, nil
+}).
+Send().
+Await().
+Result()
 
 ```
 
@@ -31,8 +31,8 @@ goos: linux
 goarch: amd64
 pkg: github.com/ragpanda/light-future
 cpu: Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz
-BenchmarkFuture-8                        	   10000	    107847 ns/op	   44655 B/op	     998 allocs/op
-BenchmarkGoroutineUsingChannelReturn-8   	   14350	     83810 ns/op	   15829 B/op	     398 allocs/op
+BenchmarkFuture-8                        	   10000	    104739 ns/op	   45246 B/op	    1006 allocs/op
+BenchmarkGoroutineUsingChannelReturn-8   	   14524	     82598 ns/op	   15830 B/op	     398 allocs/op
 PASS
-ok  	github.com/ragpanda/light-future	3.142s
+ok  	github.com/ragpanda/light-future	3.098s
 ```

@@ -16,9 +16,9 @@ func TestFutureNormal(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			return a, nil
-		})).Send()
+		}).Send()
 		fList = append(fList, f)
 	}
 
@@ -39,10 +39,10 @@ func TestFutureNormalConcurrencyGetResult(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			b := a
 			return b, nil
-		})).Use(&GoroutineInfanitePool{}).Send()
+		}).Use(&GoroutineInfanitePool{}).Send()
 		fList = append(fList, f)
 	}
 
@@ -74,12 +74,12 @@ func TestFutureNormalGetResultWithFill(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 
 			return &Tmp{
 				A: a,
 			}, nil
-		})).Send()
+		}).Send()
 		fList = append(fList, f)
 	}
 
@@ -102,7 +102,7 @@ func TestFutureNormalCancel(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			var channel chan int
 			select {
 			case <-channel:
@@ -114,7 +114,7 @@ func TestFutureNormalCancel(t *testing.T) {
 			return &Tmp{
 				A: a,
 			}, nil
-		})).Send().Cancel()
+		}).Send().Cancel()
 		fList = append(fList, f)
 	}
 
@@ -137,7 +137,7 @@ func TestFutureNormalTimeout(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			var channel chan int
 			select {
 			case <-channel:
@@ -149,7 +149,7 @@ func TestFutureNormalTimeout(t *testing.T) {
 			return &Tmp{
 				A: a,
 			}, nil
-		})).Timeout(1 * time.Second).Send()
+		}).Timeout(1 * time.Second).Send()
 		fList = append(fList, f)
 	}
 
@@ -167,9 +167,9 @@ func TestFutureReturnError(t *testing.T) {
 
 	var fList []*Future
 	for i := 0; i < 100; i++ {
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			return nil, errors.Errorf("dead")
-		})).Send()
+		}).Send()
 		fList = append(fList, f)
 	}
 
@@ -188,10 +188,10 @@ func TestFuturePanic(t *testing.T) {
 
 	var fList []*Future
 	for i := 0; i < 100; i++ {
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			panic("dead")
 			return 1, nil
-		})).Send()
+		}).Send()
 		fList = append(fList, f)
 	}
 
@@ -208,16 +208,16 @@ func TestFuturePanic(t *testing.T) {
 func TestFutureSendBefore(t *testing.T) {
 	ctx := context.Background()
 	assert.Panics(t, func() {
-		NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			panic("dead")
 			return 1, nil
-		})).Await()
+		}).Await()
 	}, "Await before send")
 	assert.Panics(t, func() {
-		NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		NewFuture(ctx,  func(ctx context.Context) (interface{}, error) {
 			panic("dead")
 			return 1, nil
-		})).Cancel()
+		}).Cancel()
 	}, "Cancel before send")
 
 }

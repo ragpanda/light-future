@@ -21,12 +21,12 @@ func BenchmarkFuture(b *testing.B) {
 		var fList []*Future
 		for i := 0; i < 100; i++ {
 			a := i
-			f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+			f := NewFuture(ctx, func(ctx context.Context) (interface{}, error) {
 				return &Tmp{
 					A: a + 10,
 					C: fmt.Sprintf("%d", a*100000),
 				}, nil
-			})).Send()
+			}).Send()
 			fList = append(fList, f)
 		}
 

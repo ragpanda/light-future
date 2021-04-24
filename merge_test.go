@@ -13,9 +13,9 @@ func TestMergeNormal(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx, func(ctx context.Context) (interface{}, error) {
 			return a, nil
-		})).Send()
+		}).Send()
 		fList = append(fList, f)
 	}
 
@@ -36,10 +36,10 @@ func TestMergeError(t *testing.T) {
 	var fList []*Future
 	for i := 0; i < 100; i++ {
 		a := i
-		f := NewFuture(ctx, NewClosureRunnable(func(ctx context.Context) (interface{}, error) {
+		f := NewFuture(ctx, func(ctx context.Context) (interface{}, error) {
 			panic("what?")
 			return a, nil
-		})).Send()
+		}).Send()
 		fList = append(fList, f)
 	}
 
